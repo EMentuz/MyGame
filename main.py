@@ -16,8 +16,17 @@ text_surface = myfont.render("Mentuz's game", False, "Green") # дополнит
 
 player = pygame.image.load('images/car.png') # иконка
 
+me = pygame.Surface((5,5))
+me.fill('White')
+coord_x = 0
+
 running = True
 while running:
+
+    screen.blit(me, (coord_x, 50))
+    coord_x += 5
+    if coord_x > 600:
+        coord_x = 0
 
     screen.blit(square, (20, 40)) # вывод square на экран
 
