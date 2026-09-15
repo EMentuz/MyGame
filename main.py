@@ -66,12 +66,18 @@ while running:
     bg_x -= 1
     if bg_x == -626:
         bg_x = 0
-    screen.blit(walk_right[player_anim_count], (player_x, player_y))# вывод фона на экран
 
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
+
+
+    if keys[pygame.K_LEFT] and player_x > 0:
+        screen.blit(walk_left[player_anim_count], (player_x, player_y))# вывод игрока на экран
+    else:
+        screen.blit(walk_right[player_anim_count], (player_x, player_y))# вывод игрока на экран
+
+    if keys[pygame.K_LEFT] and player_x > 0:
         player_x -= player_speed
-    elif keys[pygame.K_RIGHT]:
+    elif keys[pygame.K_RIGHT] and player_x < 575:
         player_x += player_speed
 
 
