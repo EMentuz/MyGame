@@ -48,6 +48,9 @@ player_speed = 5
 player_x = 0
 player_y = 250
 
+is_jump = False
+jump_count = 7
+
 running = True
 while running:
 
@@ -79,6 +82,22 @@ while running:
         player_x -= player_speed
     elif keys[pygame.K_RIGHT] and player_x < 575:
         player_x += player_speed
+
+
+    #     прыжок
+    if not is_jump:
+        if keys[pygame.K_UP]:
+            is_jump = True
+    else:
+        if jump_count >= -7:
+            if jump_count > 0:
+                player_y -= (jump_count ** 2) / 2
+            else:
+                player_y += (jump_count ** 2) / 2
+            jump_count -= 1
+        else:
+            is_jump = False
+            jump_count = 7
 
 
 
