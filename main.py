@@ -6,7 +6,7 @@ pygame.init() # инициализации игры
 screen = pygame.display.set_mode((618, 359)) # размеры экрана, flags=pygame.NOFRAME
 pygame.display.set_caption("Pygame EMentuz.corp")
 
-icon = pygame.image.load('images/icon.png') # иконка для окна
+icon = pygame.image.load('images/icon.png').convert_alpha() # иконка для окна
 pygame.display.set_icon(icon)
 
 # square = pygame.Surface((50, 170)) # создание поверхности
@@ -16,25 +16,27 @@ myfont = pygame.font.Font('fonts/CherryBombOne-Regular.ttf', 40) # создан�
 # text_surface = myfont.render("Mentuz's game", False, "Green") # дополнительные
 # характеристики к тестовой надписи: текстб цвеб задний фон сглаживание
 
-bg = pygame.image.load('images/background.jpg') # картинка
+bg = pygame.image.load('images/background.jpg').convert_alpha() # картинка
 
 # TODO: поиграться с фонами чтобы луна проходила один раз
 # bg2 = pygame.image.load('images/background2.jpg') # картинка
 # bg3 = pygame.image.load('images/background3.jpg') # картинка
 
+ghost = pygame.image.load('images/ghost.png').convert_alpha()
+ghost_x = 620
 
 # создание иконки
 walk_right = [
-    pygame.image.load('images/player_right/1.png'),
-    pygame.image.load('images/player_right/2.png'),
-    pygame.image.load('images/player_right/3.png'),
-    pygame.image.load('images/player_right/4.png'),
+    pygame.image.load('images/player_right/1.png').convert_alpha(),
+    pygame.image.load('images/player_right/2.png').convert_alpha(),
+    pygame.image.load('images/player_right/3.png').convert_alpha(),
+    pygame.image.load('images/player_right/4.png').convert_alpha(),
     ]
 walk_left = [
-    pygame.image.load('images/player_left/1.png'),
-    pygame.image.load('images/player_left/2.png'),
-    pygame.image.load('images/player_left/3.png'),
-    pygame.image.load('images/player_left/4.png'),
+    pygame.image.load('images/player_left/1.png').convert_alpha(),
+    pygame.image.load('images/player_left/2.png').convert_alpha(),
+    pygame.image.load('images/player_left/3.png').convert_alpha(),
+    pygame.image.load('images/player_left/4.png').convert_alpha(),
     ]
 
 player_anim_count = 0
@@ -66,6 +68,13 @@ while running:
 
     screen.blit(bg, (bg_x, 0)) # вывод фона на экран
     screen.blit(bg, (bg_x + 626, 0)) # вывод фона на экран
+    screen.blit(ghost, (ghost_x, 250)) # вывод ghost на экран
+
+    player_rect = walk_left[0]
+
+    # движение ghost
+    ghost_x -= 5
+
     bg_x -= 1
     if bg_x == -626:
         bg_x = 0
