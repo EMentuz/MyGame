@@ -51,7 +51,7 @@ player_x = 0
 player_y = 250
 
 is_jump = False
-jump_count = 7
+jump_count = 8
 
 running = True
 while running:
@@ -102,7 +102,7 @@ while running:
         if keys[pygame.K_UP]:
             is_jump = True
     else:
-        if jump_count >= -7:
+        if jump_count >= -8:
             if jump_count > 0:
                 player_y -= (jump_count ** 2) / 2
             else:
@@ -110,7 +110,7 @@ while running:
             jump_count -= 1
         else:
             is_jump = False
-            jump_count = 7
+            jump_count = 8
 
 
 
