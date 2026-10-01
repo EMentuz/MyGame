@@ -70,7 +70,11 @@ while running:
     screen.blit(bg, (bg_x + 626, 0)) # вывод фона на экран
     screen.blit(ghost, (ghost_x, 250)) # вывод ghost на экран
 
-    player_rect = walk_left[0]
+    player_rect = walk_left[0].get_rect(topleft=(player_x, player_y)) # квадрат вокруг игрока
+    ghost_rect = ghost.get_rect(topleft=(ghost_x, 250)) # квадрат вокруг ghost
+
+    if player_rect.colliderect(ghost_rect): # отслеживание соприкосновений
+        print('you lose')
 
     # движение ghost
     ghost_x -= 5
