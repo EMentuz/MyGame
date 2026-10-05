@@ -40,8 +40,13 @@ player_anim_count = 0
 
 bg_x = 0
 
-bg_sound = pygame.mixer.Sound("sounds/muz.mp3")
-bg_sound.play()
+# bg_sound = pygame.mixer.Sound("sounds/muz.mp3")
+# bg_sound.play()
+
+# Загружаем трек в модуль music (поддерживает mp3 отлично)
+pygame.mixer.music.load("sounds/muz.mp3")
+# Запускаем (loops=-1 означает бесконечный повтор)
+pygame.mixer.music.play(loops=-1)
 
 player_speed = 5
 player_x = 0
@@ -53,7 +58,7 @@ jump_count = 8
 next_ghost_spawn_time = pygame.time.get_ticks() + 1500
 
 label = pygame.font.Font('fonts/CherryBombOne-Regular.ttf', 40) # создание шрифта
-lose_label = label.render("You lose!", False, "Green") # дополнительные
+lose_label = label.render("Game over", False, "Green") # дополнительные
 # характеристики к тестовой надписи: текстб цвеб задний фон сглаживание
 
 restart_label = label.render("Restart", False, "Green")
@@ -142,6 +147,10 @@ while running:
             next_ghost_spawn_time = current_time + random.randint(500, 6000)
     else:
         # screen.fill((87, 88, 89))
+
+        # остановка музыки
+        pygame.mixer.music.stop()
+
         screen.blit(lose_label, (180, 100))
         screen.blit(restart_label, restart_label_rect)
 
@@ -150,6 +159,7 @@ while running:
             gameplay = True
             player_x = 0
             ghost_list_in_game.clear()
+            pygame.mixer.music.play(loops=-1)
 
     pygame.display.update() # обновление экрана
 
