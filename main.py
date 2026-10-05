@@ -13,10 +13,6 @@ pygame.display.set_icon(icon)
 # square = pygame.Surface((50, 170)) # создание поверхности
 # square.fill('Red')
 
-myfont = pygame.font.Font('fonts/CherryBombOne-Regular.ttf', 40) # создание шрифта
-# text_surface = myfont.render("Mentuz's game", False, "Green") # дополнительные
-# характеристики к тестовой надписи: текстб цвеб задний фон сглаживание
-
 bg = pygame.image.load('images/background.jpg').convert_alpha() # картинка
 
 # TODO: поиграться с фонами чтобы луна проходила один раз
@@ -54,12 +50,16 @@ player_y = 250
 is_jump = False
 jump_count = 8
 
-# a = int(random.uniform(2.5, 8) * 1000)
-# ghost_timer = pygame.USEREVENT + 1
-# pygame.time.set_timer(ghost_timer, a) # таймер для врагов
-
 next_ghost_spawn_time = pygame.time.get_ticks() + 1500
 
+label = pygame.font.Font('fonts/CherryBombOne-Regular.ttf', 40) # создание шрифта
+lose_label = label.render("You lose!", False, "Green") # дополнительные
+# характеристики к тестовой надписи: текстб цвеб задний фон сглаживание
+
+restart_label = label.render("Restart", False, "Green")
+restart_label_rect = restart_label.get_rect(topleft=(180, 200))
+
+gameplay = True
 
 running = True
 while running:
@@ -78,57 +78,78 @@ while running:
     screen.blit(bg, (bg_x, 0)) # вывод фона на экран
     screen.blit(bg, (bg_x + 626, 0)) # вывод фона на экран
 
-    player_rect = walk_left[0].get_rect(topleft=(player_x, player_y)) # квадрат вокруг игрока
+    if gameplay:
 
-    if ghost_list_in_game:
-        for el in ghost_list_in_game:
-            screen.blit(ghost, el)
-            el.x -= 5
+        player_rect = walk_left[0].get_rect(topleft=(player_x, player_y)) # квадрат вокруг игрока
 
-            if player_rect.colliderect(el): # отслеживание соприкосновений
-                print('you lose')
+        if ghost_list_in_game:
+            for (i, el) in enumerate(ghost_list_in_game):
+                screen.blit(ghost, el)
+                el.x -= 5
 
+                # удаление ghost которые за экраном
+                if el.x < -40:
+                    ghost_list_in_game.pop(i)
 
-    bg_x -= 1
-    if bg_x == -626:
-        bg_x = 0
-
-    keys = pygame.key.get_pressed()
-
-
-    if keys[pygame.K_LEFT] and player_x > 0:
-        screen.blit(walk_left[player_anim_count], (player_x, player_y))# вывод игрока на экран
-    else:
-        screen.blit(walk_right[player_anim_count], (player_x, player_y))# вывод игрока на экран
-
-    if keys[pygame.K_LEFT] and player_x > 0:
-        player_x -= player_speed
-    elif keys[pygame.K_RIGHT] and player_x < 575:
-        player_x += player_speed
+                if player_rect.colliderect(el): # отслеживание соприкосновений
+                    gameplay = False
 
 
-    #     прыжок
-    if not is_jump:
-        if keys[pygame.K_UP]:
-            is_jump = True
-    else:
-        if jump_count >= -8:
-            if jump_count > 0:
-                player_y -= (jump_count ** 2) / 2
-            else:
-                player_y += (jump_count ** 2) / 2
-            jump_count -= 1
+        bg_x -= 1
+        if bg_x == -626:
+            bg_x = 0
+
+        keys = pygame.key.get_pressed()
+
+
+        if keys[pygame.K_LEFT] and player_x > 0:
+            screen.blit(walk_left[player_anim_count], (player_x, player_y))# вывод игрока на экран
         else:
-            is_jump = False
-            jump_count = 8
+            screen.blit(walk_right[player_anim_count], (player_x, player_y))# вывод игрока на экран
+
+        if keys[pygame.K_LEFT] and player_x > 0:
+            player_x -= player_speed
+        elif keys[pygame.K_RIGHT] and player_x < 575:
+            player_x += player_speed
+
+
+        #     прыжок
+        if not is_jump:
+            if keys[pygame.K_UP]:
+                is_jump = True
+        else:
+            if jump_count >= -8:
+                if jump_count > 0:
+                    player_y -= (jump_count ** 2) / 2
+                else:
+                    player_y += (jump_count ** 2) / 2
+                jump_count -= 1
+            else:
+                is_jump = False
+                jump_count = 8
 
 
 
 
-    if player_anim_count == 3:
-        player_anim_count = 0
+        if player_anim_count == 3:
+            player_anim_count = 0
+        else:
+            player_anim_count += 1
+
+        # Планируем следующее появление: случайный интервал от 1.5 до 6 секунд
+        if current_time >= next_ghost_spawn_time:
+            ghost_list_in_game.append(ghost.get_rect(topleft=(620, 250)))
+            next_ghost_spawn_time = current_time + random.randint(500, 6000)
     else:
-        player_anim_count += 1
+        # screen.fill((87, 88, 89))
+        screen.blit(lose_label, (180, 100))
+        screen.blit(restart_label, restart_label_rect)
+
+
+        if restart_label_rect.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
+            gameplay = True
+            player_x = 0
+            ghost_list_in_game.clear()
 
     pygame.display.update() # обновление экрана
 
@@ -138,10 +159,3 @@ while running:
         if event.type == pygame.QUIT: # кнопка выхода
             pygame.quit()
             running = False
-
-    # Планируем следующее появление: случайный интервал от 1.5 до 6 секунд
-    if current_time >= next_ghost_spawn_time:
-        ghost_list_in_game.append(ghost.get_rect(topleft=(620, 250)))
-        next_ghost_spawn_time = current_time + random.randint(500, 6000)
-
-
