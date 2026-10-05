@@ -1,4 +1,5 @@
 import pygame
+import random
 
 clock = pygame.time.Clock()
 
@@ -23,7 +24,7 @@ bg = pygame.image.load('images/background.jpg').convert_alpha() # картинк
 # bg3 = pygame.image.load('images/background3.jpg') # картинка
 
 ghost = pygame.image.load('images/ghost.png').convert_alpha()
-ghost_x = 620
+ghost_list_in_game = []
 
 # создание иконки
 walk_right = [
@@ -53,8 +54,16 @@ player_y = 250
 is_jump = False
 jump_count = 8
 
+# a = int(random.uniform(2.5, 8) * 1000)
+# ghost_timer = pygame.USEREVENT + 1
+# pygame.time.set_timer(ghost_timer, a) # таймер для врагов
+
+next_ghost_spawn_time = pygame.time.get_ticks() + 1500
+
+
 running = True
 while running:
+    current_time = pygame.time.get_ticks()
 
 
     # screen.blit(square, (20, 40)) # вывод square на экран
@@ -68,16 +77,17 @@ while running:
 
     screen.blit(bg, (bg_x, 0)) # вывод фона на экран
     screen.blit(bg, (bg_x + 626, 0)) # вывод фона на экран
-    screen.blit(ghost, (ghost_x, 250)) # вывод ghost на экран
 
     player_rect = walk_left[0].get_rect(topleft=(player_x, player_y)) # квадрат вокруг игрока
-    ghost_rect = ghost.get_rect(topleft=(ghost_x, 250)) # квадрат вокруг ghost
 
-    if player_rect.colliderect(ghost_rect): # отслеживание соприкосновений
-        print('you lose')
+    if ghost_list_in_game:
+        for el in ghost_list_in_game:
+            screen.blit(ghost, el)
+            el.x -= 5
 
-    # движение ghost
-    ghost_x -= 5
+            if player_rect.colliderect(el): # отслеживание соприкосновений
+                print('you lose')
+
 
     bg_x -= 1
     if bg_x == -626:
@@ -128,7 +138,10 @@ while running:
         if event.type == pygame.QUIT: # кнопка выхода
             pygame.quit()
             running = False
-        elif event.type == pygame.KEYDOWN:# нажатие любой клавиши клавиатуры
-            if event.key == pygame.K_a: # нажатие клавиши а
-                screen.fill((10, 100, 150))  # цвет экрана
+
+    # Планируем следующее появление: случайный интервал от 1.5 до 6 секунд
+    if current_time >= next_ghost_spawn_time:
+        ghost_list_in_game.append(ghost.get_rect(topleft=(620, 250)))
+        next_ghost_spawn_time = current_time + random.randint(500, 6000)
+
 
