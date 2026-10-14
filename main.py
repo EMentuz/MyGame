@@ -61,8 +61,9 @@ label = pygame.font.Font('fonts/CherryBombOne-Regular.ttf', 40) # создани
 lose_label = label.render("Game over", False, "Green") # дополнительные
 # характеристики к тестовой надписи: текстб цвеб задний фон сглаживание
 
+
 restart_label = label.render("Restart", False, "Green")
-restart_label_rect = restart_label.get_rect(topleft=(180, 200))
+restart_label_rect = restart_label.get_rect(center=(309, 180))
 
 gameplay = True
 
@@ -151,8 +152,9 @@ while running:
         # остановка музыки
         pygame.mixer.music.stop()
 
-        screen.blit(lose_label, (180, 100))
+        screen.blit(lose_label, (216, 100))
         screen.blit(restart_label, restart_label_rect)
+
 
 
         if restart_label_rect.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]:
@@ -169,3 +171,9 @@ while running:
         if event.type == pygame.QUIT: # кнопка выхода
             pygame.quit()
             running = False
+
+
+# TODO: после ухода одного варага за край следующий моргает, смотри комменты урок 6
+# TODO: добавить счет игры.
+# TODO: добавить рекорды
+# TODO: добавить начальное меню
