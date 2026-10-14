@@ -58,12 +58,16 @@ jump_count = 8
 next_ghost_spawn_time = pygame.time.get_ticks() + 1500
 
 label = pygame.font.Font('fonts/CherryBombOne-Regular.ttf', 40) # создание шрифта
-lose_label = label.render("Game over", False, "Green") # дополнительные
+lose_label = label.render("Game over", False, "RED") # дополнительные
 # характеристики к тестовой надписи: текстб цвеб задний фон сглаживание
 
 
 restart_label = label.render("Restart", False, "Green")
 restart_label_rect = restart_label.get_rect(center=(309, 180))
+
+bullets_left = 5
+bullet = pygame.image.load('images/bullet.png').convert_alpha()
+bullets =  []
 
 gameplay = True
 
@@ -146,9 +150,25 @@ while running:
         if current_time >= next_ghost_spawn_time:
             ghost_list_in_game.append(ghost.get_rect(topleft=(620, 250)))
             next_ghost_spawn_time = current_time + random.randint(500, 6000)
-    else:
-        # screen.fill((87, 88, 89))
 
+        #выстрелы
+        if bullets:
+            for i, el in enumerate(bullets):
+                screen.blit(bullet, el)
+                el.x += 7
+
+                if el.x > 630:
+                    bullets.pop(i)
+
+                if ghost_list_in_game:
+                    for (index, ghost_el) in enumerate(ghost_list_in_game):
+                        if el.colliderect(ghost_el):
+                            ghost_list_in_game.pop(index)
+                            bullets.pop(i)
+
+
+    else:
+        "кран проигрыша"
         # остановка музыки
         pygame.mixer.music.stop()
 
@@ -161,7 +181,9 @@ while running:
             gameplay = True
             player_x = 0
             ghost_list_in_game.clear()
+            bullets.clear()
             pygame.mixer.music.play(loops=-1)
+            bullets_left = 5
 
     pygame.display.update() # обновление экрана
 
@@ -171,9 +193,13 @@ while running:
         if event.type == pygame.QUIT: # кнопка выхода
             pygame.quit()
             running = False
+        if gameplay and event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and bullets_left > 0 :
+            bullets.append(bullet.get_rect(topleft=(player_x + 30, player_y + 30)))
+            bullets_left -= 1
 
 
 # TODO: после ухода одного варага за край следующий моргает, смотри комменты урок 6
 # TODO: добавить счет игры.
 # TODO: добавить рекорды
 # TODO: добавить начальное меню
+# TODO: сделать кд патрона и вывести кол во патронов
