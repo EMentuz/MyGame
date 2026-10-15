@@ -198,7 +198,9 @@ while running:
             screen.blit(restart_label, restart_label_rect)
 
             score = label.render(f"Score: {points}", False, "White")
-            screen.blit(score, (216, 100))
+            score_rect = score.get_rect(center=screen.get_rect().center)
+            screen.blit(score, (score_rect[0], score_rect[1] - 60))
+
 
         else:
             screen.blit(lose_label, (216, 100))
@@ -232,9 +234,9 @@ while running:
 
 
 # TODO: после ухода одного врага за край следующий моргает, смотри комменты урок 6
-# TODO: добавить счет игры.
 # TODO: добавить рекорды
 # TODO: добавить начальное меню
-# TODO: возможно обновлять время при перезапуске
 
 # TODO: сделать кд патрона и вывести кол во патронов         DONE
+# TODO: добавить счет игры.                                  DONE
+# TODO: возможно обновлять время при перезапуске            DONE (решил тем что добавил время начала тек игры)
