@@ -77,6 +77,10 @@ running = True
 bullet_time = pygame.time.get_ticks()
 bullet_time_ls = []
 cooldown = 15000
+
+points = 0
+lose_time = 0
+start_time = 0
 while running:
     current_time = pygame.time.get_ticks()
 
@@ -108,6 +112,7 @@ while running:
 
                 if player_rect.colliderect(el): # отслеживание соприкосновений
                     gameplay = False
+                    lose_time = current_time
 
 
         bg_x -= 1
@@ -179,16 +184,25 @@ while running:
                 bullets_left += 1
                 bullet_time_ls.pop(0)
 
-
-
+        points = int((current_time - start_time) * 0.003)
+        points_text = label.render(f'{points}', False, "White")
+        screen.blit(points_text, (10, 0))
 
     else:
         "кран проигрыша"
         # остановка музыки
         pygame.mixer.music.stop()
 
-        screen.blit(lose_label, (216, 100))
-        screen.blit(restart_label, restart_label_rect)
+
+        if lose_time + 2000 < current_time:
+            screen.blit(restart_label, restart_label_rect)
+
+            score = label.render(f"Score: {points}", False, "White")
+            screen.blit(score, (216, 100))
+
+        else:
+            screen.blit(lose_label, (216, 100))
+
 
 
 
@@ -200,6 +214,7 @@ while running:
             pygame.mixer.music.play(loops=-1)
             bullets_left = 5
             bullet_time_ls.clear()
+            start_time = current_time
 
 
     pygame.display.update() # обновление экрана
