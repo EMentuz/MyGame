@@ -65,14 +65,18 @@ lose_label = label.render("Game over", False, "RED") # дополнительн�
 restart_label = label.render("Restart", False, "Green")
 restart_label_rect = restart_label.get_rect(center=(309, 180))
 
-bullets_left = 1
+bullets_left = 5
 bullet = pygame.image.load('images/bullet.png').convert_alpha()
 bullets =  []
+
+bulletimg = pygame.image.load('images/bulletimg.png').convert_alpha()
 
 gameplay = True
 
 running = True
 bullet_time = pygame.time.get_ticks()
+bullet_time_ls = []
+cooldown = 15000
 while running:
     current_time = pygame.time.get_ticks()
 
@@ -167,11 +171,13 @@ while running:
                             ghost_list_in_game.pop(index)
                             bullets.pop(i)
 
+        for k in range(1, bullets_left + 1):
+            screen.blit(bulletimg, (15 * k,327))
 
-        if bullets_left == 0:
-            if current_time >= bullet_time:
-                bullets_left = 1
-
+        if bullets_left < 5 :
+            if current_time >= bullet_time_ls[0]:
+                bullets_left += 1
+                bullet_time_ls.pop(0)
 
 
 
@@ -192,7 +198,9 @@ while running:
             ghost_list_in_game.clear()
             bullets.clear()
             pygame.mixer.music.play(loops=-1)
-            bullets_left = 1
+            bullets_left = 5
+            bullet_time_ls.clear()
+
 
     pygame.display.update() # обновление экрана
 
@@ -205,12 +213,13 @@ while running:
         if gameplay and event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and bullets_left > 0 :
             bullets.append(bullet.get_rect(topleft=(player_x + 30, player_y + 30)))
             bullets_left -= 1
-            bullet_time = pygame.time.get_ticks() + 500
+            bullet_time_ls.append(pygame.time.get_ticks() + cooldown)
 
 
-# TODO: после ухода одного варага за край следующий моргает, смотри комменты урок 6
+# TODO: после ухода одного врага за край следующий моргает, смотри комменты урок 6
 # TODO: добавить счет игры.
 # TODO: добавить рекорды
 # TODO: добавить начальное меню
-# TODO: сделать кд патрона и вывести кол во патронов
 # TODO: возможно обновлять время при перезапуске
+
+# TODO: сделать кд патрона и вывести кол во патронов         DONE
